@@ -18,6 +18,7 @@ setup(
     author='mk',
     author_email='manojklm@gmail.com',
     zip_safe=False,
+    packages = ['filepuller'],
     include_package_data=True,
     platforms='any',
     install_requires=['path.py'],
