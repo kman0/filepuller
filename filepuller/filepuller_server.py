@@ -25,6 +25,25 @@ HEADER_200 = b'''HTTP/1.1 200 OK\n\n'''
 HEADER_404 = b'''HTTP/1.1 404 File Not Found\n\n'''
 
 
+IGNORE_PREFIX = ['/src/exec',
+                 '/src/res',
+                 '/src/others',
+                 '/src/.git',
+                 '/src/.idea']
+
+IGNORE_EXTENSIONS = ['.pyc', '.project', '.gitignore', '.git', '.svn', '.jar', '__pycache__']
+
+IGNORE_ROOT_DIRS = ['.git', '.idea', 'res', 'exec']
+
+
+def filter_file(cur_path):
+    if [cur_path for ip in IGNORE_PREFIX if cur_path.startswith(ip)]:
+        return None
+    if cur_path.isfile() and cur_path.ext in IGNORE_EXTENSIONS:
+        return None
+    return cur_path
+
+
 def md5_file(file, block_size=2**20):  #2**20=1mb
     if os.path.exists(file):
         handle=open(file,'rb')
@@ -37,7 +56,6 @@ def md5_file(file, block_size=2**20):  #2**20=1mb
         return md5.hexdigest()
     else:
         return False
-
 
 
 class ProxyReadHandler (http.server.BaseHTTPRequestHandler):
