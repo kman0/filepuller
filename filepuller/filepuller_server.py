@@ -25,6 +25,20 @@ HEADER_200 = b'''HTTP/1.1 200 OK\n\n'''
 HEADER_404 = b'''HTTP/1.1 404 File Not Found\n\n'''
 
 
+def md5_file(file, block_size=2**20):  #2**20=1mb
+    if os.path.exists(file):
+        handle=open(file,'rb')
+        md5 = hashlib.md5()
+        while True:
+            block_data = handle.read(block_size)
+            if not block_data:
+                break
+            md5.update(block_data)
+        return md5.hexdigest()
+    else:
+        return False
+
+
 
 class ProxyReadHandler (http.server.BaseHTTPRequestHandler):
     __base = http.server.BaseHTTPRequestHandler
