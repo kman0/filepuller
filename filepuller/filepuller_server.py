@@ -44,18 +44,17 @@ def filter_file(cur_path):
     return cur_path
 
 
-def md5_file(file, block_size=2**20):  #2**20=1mb
-    if os.path.exists(file):
-        handle=open(file,'rb')
-        md5 = hashlib.md5()
-        while True:
-            block_data = handle.read(block_size)
-            if not block_data:
-                break
-            md5.update(block_data)
-        return md5.hexdigest()
-    else:
-        return False
+def get_files(root):
+    """Returns selected list of directories"""
+    ret_list = []
+    root = Path(root)
+    # append files from root dir
+    ret_list.extend([Path(file.replace('\\', '/')) for file in root.files() if filter_file(file)])
+
+    # append files from sub dirs
+    for _dir in [_dir for _dir in root.dirs() if _dir.name not in IGNORE_ROOT_DIRS]:
+        ret_list.extend([Path(file.replace('\\', '/')) for file in Path(_dir).walkfiles() if filter_file(file)])
+    return ret_list
 
 
 class ProxyReadHandler (http.server.BaseHTTPRequestHandler):
