@@ -57,6 +57,21 @@ def get_files(root):
     return ret_list
 
 
+def gen_data(path):
+    tim = datetime.datetime.now()
+    files = get_files(path)
+    tim2 = datetime.datetime.now()
+    print('Time to walk(%s): %s' % (len(files), tim2 - tim))
+    data = []
+    for file in files:
+        md5 = file.abspath().read_md5()
+        if file.startswith('/%s/' % DIR_SRC_BASE) or file.startswith('/%s\\' % DIR_SRC_BASE):
+            file = file[len(DIR_SRC_BASE) + 2:]
+        data.append(file + ':' + binascii.b2a_hex(md5).decode())
+    print('Time to hash(%s): %s' % (len(data), datetime.datetime.now() - tim2))
+    return '\n'.join(data)
+
+
 class ProxyReadHandler (http.server.BaseHTTPRequestHandler):
     __base = http.server.BaseHTTPRequestHandler
     __base_handle = __base.handle
